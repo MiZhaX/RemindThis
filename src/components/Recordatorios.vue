@@ -3,29 +3,20 @@ import Cabecera from './Cabecera.vue';
 import ResumenTareas from './ResumenTareas.vue';
 import Tarea from './Tarea.vue';
 import Pie from './Pie.vue'; 
-import Login from './Login.vue';
 import { useCollection, useFirestore } from 'vuefire'
 import { collection, addDoc, orderBy, query, setDoc, doc, deleteDoc } from 'firebase/firestore'
 import { ref, watch } from 'vue';
+import { useCurrentUser } from 'vuefire'
 
 const db = useFirestore();
 var listaTareas = useCollection(query(collection(db, 'tasks'), orderBy('prioridad', 'desc')));
 var pendingTasks = ref(listaTareas.value.filter(task => !task.completado).length);
-var usuarioActual = JSON.parse(localStorage.getItem('usuario')) || '';
+var usuarioActual = JSON.parse(localStorage.getItem('user'));
+const correoUsuario = ref(usuarioActual ? usuarioActual.email : '');
 
 function updateList(){
   pendingTasks.value = listaTareas.value.filter(task => !task.completado).length;
   listaTareas.value.sort((a, b) => b.prioridad - a.prioridad);
-}
-
-function establecerUsuario(usuario){
-  localStorage.setItem('usuario', JSON.stringify(usuario));
-  usuarioActual = JSON.parse(localStorage.getItem('usuario')) || '';
-}
-
-function cerrarSesion(){
-  usuarioActual = '';
-  localStorage.setItem('usuario', JSON.stringify(usuarioActual));
 }
 
 function nuevaTarea(tarea) {
@@ -33,7 +24,7 @@ function nuevaTarea(tarea) {
     titulo: tarea,
     prioridad: 0,
     completado: false,
-    usuario: usuarioActual
+    usuario: correoUsuario.value
   }
 
   // listaTareas.value.push(nuevaTarea);
@@ -64,6 +55,13 @@ watch(
     updateList();
   },
   { deep: true }
+);
+
+watch(
+  () => usuarioActual.value,
+  (newValue) => {
+    correoUsuario.value = newValue ? newValue.email : '';
+  }
 );
 
 function prioridadNueva(index, prioridad) {
@@ -103,7 +101,6 @@ function borrarCompletadas() {
 <template>
   <div class="container">
     <Cabecera @añadirTarea="nuevaTarea"></Cabecera>
-    <Login @establecerUsuario="establecerUsuario" @cerrarSesion="cerrarSesion"></Login>
     <ResumenTareas :tareasPendientes="pendingTasks" @borrarTareasCompletadas="borrarCompletadas"></ResumenTareas>
     <Tarea v-for="(tarea, index) in listaTareas" :key="index" :nombre="tarea.titulo" :complete="tarea.completado" :priority="tarea.prioridad" @borrarTarea="eliminarTarea(index)" @cambioPrioridad="prioridadNueva(index, $event)" @marcarCompletada="completarTarea(index)"></Tarea>
     <Pie></Pie>
@@ -118,5 +115,10 @@ function borrarCompletadas() {
   padding: 2rem;
   width: 700px;
   text-align: center;
+  margin: 0 auto; /* Centrar horizontalmente */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centrar verticalmente */
 }
 </style>

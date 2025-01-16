@@ -9,8 +9,8 @@ import Recordatorios from './components/Recordatorios.vue'
 import Landing from './components/Landing.vue'
 
 const routes = [
-  { path: '/', component: Landing },
-  { path: '/recordatorios', component: Recordatorios },
+  { path: '/', component: Landing, meta:{ requiresAuth:false } },
+  { path: '/recordatorios', component: Recordatorios, meta:{ requiresAuth:true } },
 ]
 
 const router = createRouter({
