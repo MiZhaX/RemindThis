@@ -6,9 +6,11 @@ const emit = defineEmits(['añadirTarea']);
 var nombre = ref("");
 
 function añadirTarea(){
-    console.log("Añadiendo tarea " + nombre.value);
-    emit("añadirTarea", nombre.value);
-    nombre.value = "";
+    if(nombre.value == "") return
+    else {
+        emit("añadirTarea", nombre.value);
+        nombre.value = "";
+    }
 }
 
 </script>
