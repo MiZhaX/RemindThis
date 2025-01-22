@@ -1,9 +1,11 @@
 <script setup>
   import { useRouter } from 'vue-router';
-  import { getCurrentUser } from 'vuefire';
+  import { getCurrentUser, useCurrentUser, useFirestore } from 'vuefire';
   import Login from './components/Login.vue';
 
   const router = useRouter();
+  const db = useFirestore();
+  var usuarioActual = useCurrentUser();
 
   router.beforeEach(async (to, from) => {
     if (to.meta.requiresAuth){
@@ -19,7 +21,7 @@
     <RouterLink to="/"><img src="../public/logo.png" alt="Logo" width="50" height="50"></RouterLink>
     <nav class="navegacion">
       <RouterLink to="/">Inicio</RouterLink>
-      <RouterLink to="/recordatorios">Recordatorios</RouterLink>
+      <RouterLink v-if="usuarioActual" to="/recordatorios">Recordatorios</RouterLink>
     </nav>
     <Login></Login>
   </div>   
