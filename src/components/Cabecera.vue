@@ -15,14 +15,21 @@ function añadirTarea(){
 
 </script>
 
-<template>
-    <h1>TO-DO LIST</h1>
+<template class="header">
+    <h1>RemindThis</h1>
     <input type="text" id="taskList-input" placeholder="e.g. Acabar Proyecto" v-model="nombre" @keyup.enter="añadirTarea">
 </template>
 
 <style scoped>
+.header {
+    top: 0;
+    position: fixed;
+    z-index: 1000;
+}
+
 h1 {
     margin-bottom: 1rem;
+    color: #efb514;
 }
 
 #taskList-input {

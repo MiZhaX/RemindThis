@@ -16,6 +16,7 @@
 </script>
 <template>
   <div class="cabecera">
+    <RouterLink to="/"><img src="../public/logo.png" alt="Logo" width="50" height="50"></RouterLink>
     <nav class="navegacion">
       <RouterLink to="/">Inicio</RouterLink>
       <RouterLink to="/recordatorios">Recordatorios</RouterLink>
@@ -29,13 +30,12 @@
 
 <style scoped>
 .cabecera {
-  background-color: #efb514;
-  color: black;
+  background-color: rgba(0, 0, 0, 0.26);
+  color: white;
   position: fixed;
   z-index: 100; 
   width: 100%;
   height: 7rem;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6);
   font-size: x-large;
   font-weight: bold;
   align-items: center;
@@ -44,13 +44,25 @@
   justify-content: space-between;
   padding-left: 8rem;
   padding-right: 8rem;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6);
 }
 
 .navegacion {
   display: flex;
   flex-direction: row;
+  align-items: center;
   gap: 2rem;
 }
 
+.navegacion a{
+  text-decoration: none;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+}
 
+.navegacion a:hover{
+  background-color: #efb514;
+  color: rgb(8, 19, 25);
+}
 </style>

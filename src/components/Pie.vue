@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-    <h2>Desarrollado por Mishael Bonel 2025</h2>
+    <h2>Desarrollado por Mishael Bonel Ortiz 2025</h2>
 </template>
 
 <style scoped>

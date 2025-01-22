@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(['nombre', 'complete', 'priority']);
+const props = defineProps(['nombre', 'complete', 'priority', 'tiempoTarea']);
 const emit = defineEmits(['borrarTarea', 'cambioPrioridad', 'marcarCompletada']);
 
 function lowPriority() {
@@ -41,6 +41,7 @@ function borrarTarea(){
                 @click="mediumPriority()">Medium</button>
             <button :class="props.priority == 2 ? 'active-high-priority' : 'high-priority'"
                 @click="highPriority()">High</button>
+            <span>{{ props.tiempoTarea }}</span>
         </span>
     </div>
 </template>

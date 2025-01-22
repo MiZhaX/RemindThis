@@ -30,6 +30,7 @@ function nuevaTarea(tarea) {
     titulo: tarea,
     prioridad: 0,
     completado: false,
+    creado: new Date(),
     usuario: usuarioActual.value.email
   }
 
@@ -58,6 +59,7 @@ watch(
   () => listaTareas.value,
   (newValue, oldValue) => {
     updateList();
+    actualizarCreacion();
   },
   { deep: true }
 );
@@ -94,6 +96,20 @@ function borrarCompletadas() {
   });
 }
 
+function actualizarCreacion() {
+  if(listaTareas.value){
+    listaTareas.value.forEach(task => {
+      const minutos = Math.floor((Date.now() - task.creado.toDate()) / 60000);
+      const horas = Math.floor(minutos / 60);
+      const minutosRestantes = minutos % 60;
+      if(minutosRestantes == 0 && horas == 0) task.tiempoTarea = `Creada recientemente`;
+      else if(horas == 0) task.tiempoTarea = `Creada hace ${minutosRestantes}m`;
+      else if(minutosRestantes == 0) task.tiempoTarea = `Creada hace ${horas}h`;
+      else task.tiempoTarea = `Creada hace ${horas}h ${minutosRestantes}m`;
+    });
+  }
+}
+
 </script>
 
 <template>
@@ -101,7 +117,9 @@ function borrarCompletadas() {
     <Cabecera @añadirTarea="nuevaTarea"></Cabecera>
     <ResumenTareas :tareasPendientes="pendingTasks" @borrarTareasCompletadas="borrarCompletadas"></ResumenTareas>
     <div class="tareas">
-      <Tarea v-for="(tarea, index) in listaTareas" :key="index" :nombre="tarea.titulo" :complete="tarea.completado" :priority="tarea.prioridad" @borrarTarea="eliminarTarea(index)" @cambioPrioridad="prioridadNueva(index, $event)" @marcarCompletada="completarTarea(index)"></Tarea>
+      <TransitionGroup name="fade" tag="div">
+        <Tarea v-for="(tarea, index) in listaTareas" :key="index" :nombre="tarea.titulo" :complete="tarea.completado" :priority="tarea.prioridad" :tiempoTarea="tarea.tiempoTarea" @borrarTarea="eliminarTarea(index)" @cambioPrioridad="prioridadNueva(index, $event)" @marcarCompletada="completarTarea(index)"></Tarea>
+      </TransitionGroup>
     </div>
     <Pie></Pie>
   </div>
@@ -116,15 +134,22 @@ function borrarCompletadas() {
   width: 700px;
   max-height: 500px;
   text-align: center;
-  margin: 0 auto; /* Centrar horizontalmente */
+  margin: 0 auto; 
   position: absolute;
   top: 57%;
   left: 50%;
-  transform: translate(-50%, -50%); /* Centrar verticalmente */
+  transform: translate(-50%, -50%);
 }
 
 .tareas {
-  max-height: 210px; /* Ajusta este valor según tus necesidades */
+  max-height: 210px; 
   overflow-y: auto;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 </style>
